@@ -9,55 +9,54 @@ export async function getHotels(req: AuthenticatedRequest, res: Response) {
 
   try {
 
-    const hotels = await hotelsService.getHotelsService(userId);
+    const hotels = await hotelsService.getHotelsService(Number(userId));
 
     return res.status(httpStatus.OK).send(hotels);
 
   } catch (error) {
 
     if (error.name === "NotFoundError") {
-      return res.status(httpStatus.NOT_FOUND).send(httpStatus.NOT_FOUND);
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
 
     if (error.name === "PaymentError") {
-      return res.status(httpStatus.PAYMENT_REQUIRED).send(httpStatus.NOT_FOUND);
+      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     }
 
-
-    return res.sendStatus(httpStatus.NO_CONTENT);
-
   }
+
+  return res.sendStatus(httpStatus.BAD_REQUEST);
 
 }
 
 export async function getHotelsById(req: AuthenticatedRequest, res: Response) {
 
-  const hotelId = Number(req.query.hotelId);
+  const { hotelId } = req.params;
   const { userId } = req;
 
   try {
 
     if (!hotelId) {
-      return res.sendStatus(httpStatus.BAD_REQUEST);
+      res.sendStatus(httpStatus.BAD_REQUEST);
     }
 
-    const hotelById = await hotelsService.getHotelByIdService(hotelId, userId);
+    const hotelById = await hotelsService.getHotelByIdService(Number(hotelId), Number(userId));
 
     return res.status(httpStatus.OK).send(hotelById);
 
   } catch (error) {
 
     if (error.name === "NotFoundError") {
-      return res.status(httpStatus.NOT_FOUND).send(httpStatus.NOT_FOUND);
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
 
     if (error.name === "PaymentError") {
-      return res.status(httpStatus.PAYMENT_REQUIRED).send(httpStatus.NOT_FOUND);
+      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     }
 
-    return res.sendStatus(httpStatus.NOT_FOUND);
-
   }
+
+  return res.sendStatus(httpStatus.BAD_REQUEST);
 
 }
 

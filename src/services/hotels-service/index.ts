@@ -1,4 +1,5 @@
 import { notFoundError } from "@/errors";
+import { paymentError } from "@/errors/payment-required-error";
 import enrollmentRepository from "@/repositories/enrollment-repository";
 import hotelsRepository from "@/repositories/hotels-repository";
 import ticketRepository from "@/repositories/ticket-repository";
@@ -37,7 +38,7 @@ async function checkTicket(enrollmentId: number) {
 
     if(!ticket) throw notFoundError();
 
-    if (ticket.TicketType.isRemote || !ticket.TicketType.includesHotel || ticket.status !== "PAID") throw {type: "PaymentError", message: "O ticket não foi pago ou não inlcui hotel!"};
+    if (ticket.status === "RESERVED" || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) throw paymentError();
 
 }
 
