@@ -7,7 +7,6 @@ import ticketRepository from "@/repositories/ticket-repository";
 async function getHotelsService(userId: number) {
 
     const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-
     if (!enrollment) throw notFoundError();
 
     await checkTicket(enrollment.id);
@@ -20,13 +19,11 @@ async function getHotelsService(userId: number) {
 async function getHotelByIdService(hotelId: number, userId: number) {
 
     const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-
     if (!enrollment) throw notFoundError();
 
     await checkTicket(enrollment.id);
-    
-    const hotelById = await hotelsRepository.findHotelById(hotelId);
 
+    const hotelById = await hotelsRepository.findHotelById(hotelId);
     if (!hotelById) throw notFoundError();
 
     return hotelById;
@@ -35,8 +32,7 @@ async function getHotelByIdService(hotelId: number, userId: number) {
 async function checkTicket(enrollmentId: number) {
 
     const ticket = await ticketRepository.findTicketByEnrollmentId(enrollmentId);
-
-    if(!ticket) throw notFoundError();
+    if (!ticket) throw notFoundError();
 
     if (ticket.status === "RESERVED" || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) throw paymentError();
 
